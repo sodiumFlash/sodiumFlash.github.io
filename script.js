@@ -1,71 +1,76 @@
-let arr = [0, 1, 2, 3, 1, 0, 2, 3]; // Grid values (0-3)
-let counters = [4, 6]; // Two number counters (0-8)
+document.addEventListener("DOMContentLoaded", function () {
+    let array = [0, 0, 0, 0, 0, 0, 0, 0];
+    let redCounter = 0;
+    let blueCounter = 0;
 
-function getImage(value) {
-    const images = ["images/img0.png", "images/img1.png", "images/img2.png", "images/img3.png"];
-    return images[value]; 
-}
+    const arrayContainer = document.getElementById("array-container");
+    const redCounterDisplay = document.getElementById("red-counter");
+    const blueCounterDisplay = document.getElementById("blue-counter");
 
-function updateGrid() {
-    const grid = document.getElementById("imageGrid");
-    grid.innerHTML = ""; 
+    function updateDisplay() {
+        arrayContainer.innerHTML = "";
+        array.forEach((value, index) => {
+            const container = document.createElement("div");
+            container.classList.add("image-container");
 
-    arr.forEach((value, index) => {
-        const div = document.createElement("div");
-        div.className = "image-container";
+            const img = document.createElement("img");
+            img.src = `img/${value}.png`; 
+            
+            const plusButton = document.createElement("button");
+            plusButton.textContent = "+";
+            plusButton.addEventListener("click", () => {
+                if (array[index] < 3) array[index]++;
+                updateDisplay();
+            });
 
-        const btnPlus = document.createElement("button");
-        btnPlus.textContent = "^";
-        btnPlus.onclick = () => updateArray(index, 1);
+            const minusButton = document.createElement("button");
+            minusButton.textContent = "-";
+            minusButton.addEventListener("click", () => {
+                if (array[index] > 0) array[index]--;
+                updateDisplay();
+            });
 
-        const img = document.createElement("img");
-        img.src = getImage(value);
+            container.appendChild(plusButton);
+            container.appendChild(img);
+            container.appendChild(minusButton);
+            arrayContainer.appendChild(container);
+        });
 
-        const btnMinus = document.createElement("button");
-        btnMinus.textContent = "v";
-        btnMinus.onclick = () => updateArray(index, -1);
+        redCounterDisplay.textContent = redCounter;
+        blueCounterDisplay.textContent = blueCounter;
+    }
 
-        div.appendChild(btnPlus);
-        div.appendChild(img);
-        div.appendChild(btnMinus);
-        grid.appendChild(div);
+    // Swap 2 ↔ 3 in array and swap counters
+    document.getElementById("toggle-btn").addEventListener("click", () => {
+        array = array.map(value => (value === 2 ? 3 : value === 3 ? 2 : value));
+
+        // Swap counter values
+        [redCounter, blueCounter] = [blueCounter, redCounter];
+
+        updateDisplay();
     });
-}
 
-function updateArray(index, change) {
-    arr[index] = Math.max(0, Math.min(3, arr[index] + change));
-    updateGrid();
-}
+    // Red Counter Increase/Decrease
+    document.getElementById("red-plus").addEventListener("click", () => {
+        if (redCounter < 8) redCounter++;
+        updateDisplay();
+    });
 
-function updateCounter(index, change) {
-    counters[index] = Math.max(0, Math.min(8, counters[index] + change));
-    document.getElementById(`num${index + 1}`).textContent = counters[index];
-}
+    document.getElementById("red-minus").addEventListener("click", () => {
+        if (redCounter > 0) redCounter--;
+        updateDisplay();
+    });
 
-function shiftLeft(counterIndex) {
-    arr.shift();
-    arr.push(0);
-    updateCounter(counterIndex, -1); // Decrease the corresponding counter
-    updateGrid();
-}
+    // Blue Counter Increase/Decrease
+    document.getElementById("blue-plus").addEventListener("click", () => {
+        if (blueCounter < 8) blueCounter++;
+        updateDisplay();
+    });
 
-function toggleValues() {
-    arr = arr.map(value => (value === 2 ? 3 : value === 3 ? 2 : value));
-    updateGrid();
-}
+    document.getElementById("blue-minus").addEventListener("click", () => {
+        if (blueCounter > 0) blueCounter--;
+        updateDisplay();
+    });
 
-function resetValues() {
-    arr = Array(8).fill(0);
-    counters = [0, 0];
-    updateGrid();
-    document.getElementById("num1").textContent = 0;
-    document.getElementById("num2").textContent = 0;
-}
-
-function start() {
-    let total = Math.min(8, counters[0] + counters[1]); // Get sum, max 8
-    arr = Array(total).fill(1).concat(Array(8 - total).fill(0)); // Fill leftmost with 1s
-    updateGrid();
-}
-
-updateGrid();
+    updateDisplay();
+});
