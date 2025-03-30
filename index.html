@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Grid & Counters</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Interactive Array Unloader :p</h1>
+    </header>
+
+    <!-- Control Buttons -->
+    <div class="button-container">
+        <button onclick="shiftLeft(0)">Unload 🟦 (Counter 1)</button>
+        <button onclick="shiftLeft(1)">Unload 🟥 (Counter 2)</button>
+        <button onclick="toggleValues()">Toggle 🔄</button>
+        <button onclick="resetValues()">Reset 🚫</button>
+        <button onclick="start()">Start ✅</button>
+    </div>
+
+    <!-- Number Counters -->
+    <div class="counter-container">
+        <div class="number-container">
+            🟦 <button onclick="updateCounter(0, -1)">-</button>
+            <span id="num1">4</span>
+            <button onclick="updateCounter(0, 1)">+</button>
+        </div>
+        <div class="number-container">
+            🟥 <button onclick="updateCounter(1, -1)">-</button>
+            <span id="num2">6</span>
+            <button onclick="updateCounter(1, 1)">+</button>
+        </div>
+    </div>
+
+    <!-- PNG Grid -->
+    <div class="container" id="imageGrid"></div>
+
+    <footer>
+        <p>Built with 🟦 using pain</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
