@@ -51,11 +51,12 @@ function shiftLeft(counterIndex) {
 
 function toggleValues() {
     arr = arr.map(value => (value === 2 ? 3 : value === 3 ? 2 : value));
+    
     [counters[0], counters[1]] = [counters[1], counters[0]];
 
     document.getElementById(`num${1}`).textContent = counters[0];
     document.getElementById(`num${2}`).textContent = counters[1];
-    
+
     updateGrid();
 }
 
