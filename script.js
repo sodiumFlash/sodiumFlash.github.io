@@ -1,91 +1,76 @@
-// No need for DOMContentLoaded
-let array = [0, 0, 0, 0, 0, 0, 0, 0];
-let redCounter = 0;
-let blueCounter = 0;
+let arr = [0, 1, 2, 3, 1, 0, 2, 3]; // Grid values (0-3)
+let counters = [4, 6]; // Two number counters (0-8)
 
-const arrayContainer = document.getElementById("array-container");
-const redCounterDisplay = document.getElementById("red-counter");
-const blueCounterDisplay = document.getElementById("blue-counter");
-
-function updateDisplay() {
-    arrayContainer.innerHTML = "";
-
-    array.forEach((value, index) => {
-        const container = document.createElement("div");
-        container.classList.add("image-container");
-
-        const img = document.createElement("img");
-        img.src = `img/${value}.png`; // Make sure images exist
-        img.alt = `Value ${value}`;
-
-        const plusButton = document.createElement("button");
-        plusButton.textContent = "+";
-        plusButton.addEventListener("click", () => {
-            if (array[index] < 3) {
-                array[index]++;
-                updateDisplay();
-            }
-        });
-
-        const minusButton = document.createElement("button");
-        minusButton.textContent = "-";
-        minusButton.addEventListener("click", () => {
-            if (array[index] > 0) {
-                array[index]--;
-                updateDisplay();
-            }
-        });
-
-        container.appendChild(plusButton);
-        container.appendChild(img);
-        container.appendChild(minusButton);
-        arrayContainer.appendChild(container);
-    });
-
-    redCounterDisplay.textContent = redCounter;
-    blueCounterDisplay.textContent = blueCounter;
+function getImage(value) {
+    const images = ["images/img0.png", "images/img1.png", "images/img2.png", "images/img3.png"];
+    return images[value]; 
 }
 
-// Toggle 2 ↔ 3 in array & Swap Red ↔ Blue counters
-document.getElementById("toggle-btn").addEventListener("click", () => {
-    array = array.map(value => (value === 2 ? 3 : value === 3 ? 2 : value));
+function updateGrid() {
+    const grid = document.getElementById("imageGrid");
+    grid.innerHTML = ""; 
 
-    // Swap counter values
-    let temp = redCounter;
-    redCounter = blueCounter;
-    blueCounter = temp;
+    arr.forEach((value, index) => {
+        const div = document.createElement("div");
+        div.className = "image-container";
 
-    updateDisplay();
-});
+        const btnPlus = document.createElement("button");
+        btnPlus.textContent = "+";
+        btnPlus.onclick = () => updateArray(index, 1);
 
-// Red Counter Controls
-document.getElementById("red-plus").addEventListener("click", () => {
-    if (redCounter < 8) {
-        redCounter++;
-        updateDisplay();
-    }
-});
+        const img = document.createElement("img");
+        img.src = getImage(value);
 
-document.getElementById("red-minus").addEventListener("click", () => {
-    if (redCounter > 0) {
-        redCounter--;
-        updateDisplay();
-    }
-});
+        const btnMinus = document.createElement("button");
+        btnMinus.textContent = "-";
+        btnMinus.onclick = () => updateArray(index, -1);
 
-// Blue Counter Controls
-document.getElementById("blue-plus").addEventListener("click", () => {
-    if (blueCounter < 8) {
-        blueCounter++;
-        updateDisplay();
-    }
-});
+        div.appendChild(btnPlus);
+        div.appendChild(img);
+        div.appendChild(btnMinus);
+        grid.appendChild(div);
+    });
+}
 
-document.getElementById("blue-minus").addEventListener("click", () => {
-    if (blueCounter > 0) {
-        blueCounter--;
-        updateDisplay();
-    }
-});
+function updateArray(index, change) {
+    arr[index] = Math.max(0, Math.min(3, arr[index] + change));
+    updateGrid();
+}
 
-updateDisplay(); // Initialize display
+function updateCounter(index, change) {
+    counters[index] = Math.max(0, Math.min(8, counters[index] + change));
+    document.getElementById(`num${index + 1}`).textContent = counters[index];
+}
+
+function shiftLeft(counterIndex) {
+    arr.shift();
+    arr.push(0);
+    updateCounter(counterIndex, -1); // Decrease the corresponding counter
+    updateGrid();
+}
+
+function toggleValues() {
+    arr = arr.map(value => (value === 2 ? 3 : value === 3 ? 2 : value));
+    [counters[0], counters[1]] = [counters[1], counters[0]];
+
+    document.getElementById(`num${1}`).textContent = counters[0];
+    document.getElementById(`num${2}`).textContent = counters[1];
+    
+    updateGrid();
+}
+
+function resetValues() {
+    arr = Array(8).fill(0);
+    counters = [0, 0];
+    updateGrid();
+    document.getElementById("num1").textContent = 0;
+    document.getElementById("num2").textContent = 0;
+}
+
+function start() {
+    let total = Math.min(8, counters[0] + counters[1]); // Get sum, max 8
+    arr = Array(total).fill(1).concat(Array(8 - total).fill(0)); // Fill leftmost with 1s
+    updateGrid();
+}
+
+updateGrid();
